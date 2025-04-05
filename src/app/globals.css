@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    min-height: 100%;
+    background: white;
+}
+
+.wallet-adapter-button-trigger {
+    background: rgb#16a34a !important;
+    border-radius: 8px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+}
+.wallet-adapter-dropdown-list,
+.wallet-adapter-button {
+    font-family: inherit !important;
+}
+
+input, textarea {
+    background-color: transparent;
+}
