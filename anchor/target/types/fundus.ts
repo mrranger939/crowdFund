@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/fundus.json`.
  */
 export type Fundus = {
-  "address": "BWKPqyezd6a3B6npzvR3M5svUerDANVpuMUDyvF51Zd4",
+  "address": "EUbiWhjMBnf6LVgrmBnnToqWAxBwBGLHFsGcVX2i7Y4t",
   "metadata": {
     "name": "fundus",
     "version": "0.1.0",

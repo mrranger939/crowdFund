@@ -10,7 +10,7 @@ use instructions::*;
 use states::*;
 
 
-declare_id!("BWKPqyezd6a3B6npzvR3M5svUerDANVpuMUDyvF51Zd4");
+declare_id!("EUbiWhjMBnf6LVgrmBnnToqWAxBwBGLHFsGcVX2i7Y4t");
 
 #[program]
 pub mod fundus {
