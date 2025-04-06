@@ -46,7 +46,7 @@ export default function Page() {
       })
       ,
       {
-        pending: 'Approve transaction',
+        pending: 'Approving transaction',
         success: 'Transaction successfull',
         error: 'Encountered a error'
       }

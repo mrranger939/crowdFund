@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { ReactQueryProvider } from './react-query-provider'
 import AppWalletProvider from '@/components/AppWalletProvider'
+import {Provider} from 'react-redux'
+import { store } from '@/store'
 
 const metadata = {
   title: 'fundus',
@@ -21,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-white">
         <ReactQueryProvider>
+          <Provider store={store}>
           <AppWalletProvider>
           <Header />
           <main className="max-w-6xl mx-auto min-h-screen bg-white">
@@ -42,6 +45,7 @@ export default function RootLayout({
             theme="dark"
           />
           </AppWalletProvider>
+          </Provider>
         </ReactQueryProvider>
       </body>
     </html>

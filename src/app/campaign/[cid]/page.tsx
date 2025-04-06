@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import CampaignDetails from '@/components/CampaignDetails'
 import CampaignDonate from '@/components/CampaignDonate'
@@ -9,21 +9,38 @@ import WithdrawalList from '@/components/WithdrawalList'
 import Image from 'next/image'
 import WithdrawModal from '@/components/WithdrawModal'
 import DeleteModal from '@/components/DeleteModal'
-import { campaigns, dummyTransactions } from '@/data'
+import { dummyTransactions } from '@/data'
+import { fetchAllDonations, fetchAllWithdrawals, fetchCampaignDetails, getProviderReadOnly } from '@/services/blockchain'
+import { Campaign, RootState } from '@/utils/interfaces'
+import { useSelector } from 'react-redux'
 
 export default function CampaignPage() {
   const { cid } = useParams()
+  const program = useMemo(()=>getProviderReadOnly(), [])
+  /* const [campaign, setCampaign] = useState<Campaign | null>(null); */
+
+  const {campaign, donations, withdrawals} = useSelector((states: RootState)=> states.globalStates)
+
+    useEffect(()=>{
+      if (cid) {
+        const fetchDetails = async()=>{
+          await fetchCampaignDetails(program, cid as string)
+          await fetchAllDonations(program, cid as string)
+          await fetchAllWithdrawals(program, cid as string)
+        }
+        fetchDetails()
+      }
+      
+    }, [program, cid])
+  
 
   // Find the campaign by `cid`
-  const campaign = campaigns.find((c) => c.publicKey === cid)
+  // const campaign = campaigns.find((c) => c.publicKey === cid)
 
   // Filter transactions based on the `cid`
-  const donations = dummyTransactions.filter(
+/*   const donations = dummyTransactions.filter(
     (tx) => tx.cid === campaign?.cid && tx.credited
-  )
-  const withdrawals = dummyTransactions.filter(
-    (tx) => tx.cid === campaign?.cid && !tx.credited
-  )
+  ) */
 
   if (!campaign) return <h4>Campaign not found</h4>
 

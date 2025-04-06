@@ -1,16 +1,35 @@
 'use client'
 
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { campaigns } from '@/data'
 import Link from 'next/link'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/utils/interfaces'
+import { fetchAllDonations, fetchAllWithdrawals, fetchCampaignDetails, getProvider, getProviderReadOnly, updateCampaign } from '@/services/blockchain'
+import { toast } from 'react-toastify'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 export default function Page() {
   const { cid } = useParams()
-
-  // Static data: Find the campaign using `cid`
-  const campaign = campaigns.find((c) => c.publicKey === (cid as string))
-
+  const programReadOnly = useMemo(()=> getProviderReadOnly(), [])
+ const {publicKey, sendTransaction, signTransaction} = useWallet()
+   const program = useMemo(()=> getProvider(publicKey, signTransaction, sendTransaction), [publicKey, signTransaction, sendTransaction])
+ 
+  const {campaign, donations, withdrawals} = useSelector((states: RootState)=> states.globalStates)
+    useEffect(()=>{
+      if (cid) {
+        const fetchDetails = async()=>{
+          const campaignData = await fetchCampaignDetails(programReadOnly, cid as string)
+          form.title = campaignData.title
+          form.description = campaignData.description
+          form.image_url = campaignData.imageUrl
+          form.goal = campaignData.goal
+        }
+        fetchDetails()
+      }
+      
+    }, [programReadOnly, program, cid])
   // Local form state
   const [form, setForm] = useState({
     title: campaign?.title || '',
@@ -19,12 +38,38 @@ export default function Page() {
     goal: campaign?.goal || '',
   })
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('Form Submitted:', form)
-    alert('Campaign updated successfully!')
-  }
+    if (!publicKey) return toast.warn('Please connect wallet!')
+    await toast.promise(
 
+      new Promise<void>(async (resolve, reject)=>{
+        try {
+          const {title, description, image_url, goal} = form
+          const tx:any = await updateCampaign(
+            program!,
+            publicKey!,
+            title,
+            description, 
+            image_url,
+            Number(goal),
+            cid as string
+          )
+
+          console.log(tx)
+          resolve(tx)
+        } catch (e) {
+          reject(e)
+        }
+      })
+      ,
+      {
+        pending: 'Approving transaction',
+        success: 'Transaction successfull',
+        error: 'Encountered a error'
+      }
+    )
+  }
   // Fallback if campaign not found
   if (!campaign) return <h4>Campaign not found</h4>
 

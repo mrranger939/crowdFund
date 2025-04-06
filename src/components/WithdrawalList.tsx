@@ -1,4 +1,4 @@
-import { truncateAddress } from '@/utils/helper'
+import { getCluster, truncateAddress } from '@/utils/helper'
 import { Transaction } from '@/utils/interfaces'
 import Link from 'next/link'
 import React from 'react'
@@ -7,7 +7,10 @@ import { FaMoneyBillWave } from 'react-icons/fa'
 const WithdrawalList: React.FC<{ withdrawals: Transaction[] }> = ({
   withdrawals,
 }) => {
-  const CLUSTER_NAME = process.env.CLUSTER_NAME || 'custom'
+  // const CLUSTER_NAME = process.env.CLUSTER_NAME || 'custom'
+
+  const CLUSTER: string = process.env.NEXT_PUBLIC_CLUSTER || "localhost";
+  const CLUSTER_NAME = getCluster(CLUSTER)
 
   return (
     <div className="mt-8">

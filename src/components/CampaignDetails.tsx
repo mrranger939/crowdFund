@@ -2,7 +2,7 @@ import { truncateAddress } from '@/utils/helper'
 import { Campaign } from '@/utils/interfaces'
 import Link from 'next/link'
 import React from 'react'
-import { FaUserCircle, FaCoins, FaDollarSign, FaBell } from 'react-icons/fa'
+import { FaUserCircle, FaCoins, FaDollarSign, FaBell, FaRegCalendarAlt } from 'react-icons/fa'
 
 const CampaignDetails: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
   const goalReachedText =
@@ -86,7 +86,11 @@ const CampaignDetails: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
       </div>
 
       {/* Creator Info */}
-      <div className="mt-8">
+      <div className="mt-8 grid grid-cols-2 gap-6">
+        
+
+
+        <div>
         <h3 className="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
           <FaUserCircle className="text-blue-600" />
           Created by
@@ -101,6 +105,18 @@ const CampaignDetails: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
             </Link>
           </p>
         </div>
+        </div>
+        <div>
+          <h3 className="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
+            <FaRegCalendarAlt className="text-blue-600" />
+            Created On
+          </h3>
+          <div className="flex items-center space-x-4">
+            <p className="text-gray-800 font-semibold">
+              {new Date(campaign.timestamp).toLocaleDateString()}
+            </p>
+          </div>
+          </div>
       </div>
     </div>
   )
