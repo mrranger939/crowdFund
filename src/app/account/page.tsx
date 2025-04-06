@@ -3,11 +3,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { campaigns as dummyCampaigns, dummyProgramState } from '@/data'
 import CampaignCard from '@/components/CampaignCard'
-import AccountDetails from '@/components/AccountDetails'
 import { fetchProgramState, fetchUserCampaign, getProviderReadOnly } from '@/services/blockchain'
 import { Campaign, RootState } from '@/utils/interfaces'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useSelector } from 'react-redux'
+import PlatformSettings from '@/components/PlatformSettings'
 
 export default function Page() {
   const {publicKey} = useWallet()
@@ -66,7 +66,7 @@ export default function Page() {
 
       {programState && programState.platformAddress === publicKey?.toBase58() && (
         <div className="md:col-span-1">
-          <AccountDetails programState={programState} />
+          <PlatformSettings programState={programState} />
         </div>
       )}
     </div>

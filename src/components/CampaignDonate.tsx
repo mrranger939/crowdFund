@@ -57,10 +57,6 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
         error: 'Encountered a error'
       }
     )
-      
-
-    console.log(`Donated ${amount} SOL to campaign ID: ${campaign.cid}`)
-    setAmount('')
   }
 
   return (

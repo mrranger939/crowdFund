@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { FaUserCircle, FaPlusCircle, FaBars, FaTimes } from 'react-icons/fa'
 import {WalletMultiButton} from '@solana/wallet-adapter-react-ui'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { getProviderReadOnly } from '@/services/blockchain'
 
 export default function Header() {
+
+  const {publicKey, sendTransaction, signTransaction} = useWallet()
+  const program = useMemo(()=>getProviderReadOnly(), [])
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
 
@@ -19,7 +24,8 @@ export default function Header() {
           Fundus<span className="text-gray-700">Crowd</span>
         </Link>
 
-        {/* Static Navigation */}
+        
+{ program && publicKey &&  ( 
         <nav className="hidden md:flex space-x-6 items-center">
           <Link
             href="/account"
@@ -35,7 +41,7 @@ export default function Header() {
             <FaPlusCircle className="text-gray-700 hover:text-green-600" />
             <span>Create</span>
           </Link>
-        </nav>
+        </nav>)}
 
         {isMounted && (
           <div className="hidden md:inline-block">
@@ -61,6 +67,8 @@ export default function Header() {
       {isOpen && (
         <nav className="md:hidden bg-white shadow-md py-4">
           <div className="container mx-auto px-6 space-y-4">
+  {(    program && publicKey &&          
+            <>
             <Link
               href="/account"
               className="text-gray-700 hover:text-green-600 flex items-center space-x-2 transition duration-300"
@@ -75,6 +83,8 @@ export default function Header() {
               <FaPlusCircle />
               <span>Create</span>
             </Link>
+            </>
+          )}
             {isMounted && (
               //<button className="bg-green-600 text-white py-2 px-4 rounded-lg">
               //  Connect Wallet style={{backgroundColor: '#16a34a', color:'white'}}

@@ -353,3 +353,27 @@ export const deleteCampaign = async (
     await connection.confirmTransaction(tx, 'finalized');
     return tx;
 };
+
+// update platform fee
+export const UpdatePlatformFee = async (
+  program: Program<Fundus>,
+  publicKey: PublicKey,
+  percent: number,
+): Promise<TransactionSignature> => {
+    const connection = new Connection(RPC_URL, 'confirmed');
+        
+    const [programStatePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("program_state")],
+      program.programId
+      )
+   
+    const tx = await program.methods
+    .updatePlatformSettings(new BN(percent))
+    .accountsPartial({
+        programState: programStatePda,
+        updater: publicKey
+    })
+    .rpc()
+    await connection.confirmTransaction(tx, 'finalized');
+    return tx;
+};

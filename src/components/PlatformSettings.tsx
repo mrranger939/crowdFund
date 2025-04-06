@@ -1,21 +1,48 @@
+import { fetchProgramState, getProvider, UpdatePlatformFee } from '@/services/blockchain'
 import { ProgramState } from '@/utils/interfaces'
-import React, { useState } from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
+import React, { useMemo, useState } from 'react'
 import { FaDonate } from 'react-icons/fa'
+import { toast } from 'react-toastify'
 
-const AccountDetails: React.FC<{ programState: ProgramState }> = ({
+const PlatformSettings: React.FC<{ programState: ProgramState }> = ({
   programState,
 }) => {
   const [percent, setPercent] = useState('')
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const {publicKey, sendTransaction, signTransaction} = useWallet()
+  const program = useMemo(()=> getProvider(publicKey, signTransaction, sendTransaction), [publicKey, signTransaction, sendTransaction])
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!percent) return
 
-    // Simulate an update transaction
-    console.log(`Service fee updated to ${percent}%`)
-    setPercent('')
-    alert(`Service fee successfully updated to ${percent}%`)
+    if (!publicKey) return toast.warn('Please connect wallet!')
+    await toast.promise(
+
+      new Promise<void>(async (resolve, reject)=>{
+        try {
+          const tx:any = await UpdatePlatformFee(
+            program!,
+            publicKey!,
+            Number(percent)
+          )
+
+          setPercent('')
+          await fetchProgramState(program!)          
+          console.log(tx)
+          resolve(tx)
+        } catch (e) {
+          reject(e)
+        }
+      })
+      ,
+      {
+        pending: 'Approving transaction',
+        success: 'Transaction successfull',
+        error: 'Encountered a error'
+      }
+    )
   }
 
   return (
@@ -61,4 +88,4 @@ const AccountDetails: React.FC<{ programState: ProgramState }> = ({
   )
 }
 
-export default AccountDetails
+export default PlatformSettings

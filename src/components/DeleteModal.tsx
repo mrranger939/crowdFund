@@ -21,9 +21,6 @@ const {publicKey, sendTransaction, signTransaction} = useWallet()
   const program = useMemo(()=> getProvider(publicKey, signTransaction, sendTransaction), [publicKey, signTransaction, sendTransaction])
   
   const handleDelete =  async () => {
-
-
-
     if (!publicKey) return toast.warn('Please connect wallet!')
 
     await toast.promise(
